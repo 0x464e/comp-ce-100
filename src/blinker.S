@@ -1,0 +1,18 @@
+
+
+
+.global blinker
+
+
+blinker:
+
+	push {r0}				//Push used register to stack
+
+
+
+	pop {r0}				//Pop register from stack, Remember the pop order if used more than one register (first pushed, last popped)
+	bx lr					//Return to place where this function has been called.
+
+
+
+
