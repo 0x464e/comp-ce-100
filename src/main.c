@@ -120,7 +120,7 @@ int main()
 
 	    //Try to avoid writing any code in the main loop.
 		while(1){
-			SetPixel(0,0,0,0,255);
+			SetPixel(0,0,255,255,255);
 			run(0);
 
 		}

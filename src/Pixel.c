@@ -35,7 +35,7 @@ void setup(){
 	// Toggle rst bit
 	*CONTROL |= RST_BIT;
 	usleep(RST_SLEEP);
-	*CONTROL ^= *CONTROL;
+	*CONTROL &=~ RST_BIT;
 	usleep(RST_SLEEP);
 	*CONTROL |= RST_BIT;
 	usleep(RST_SLEEP);
@@ -45,13 +45,13 @@ void setup(){
 
 	//Write code that sets 6-bit values in register of DM163 chip. Recommended that every bit in that register is set to 1. 6-bits and 24 "bytes", so some kind of loop structure could be nice.
 	//24*6 bits needs to be transmitted
-	for (int i=0; i < 23; i++) {
+	for (int i=0; i < 24; i++) {
 		for (int j=0; j < 6; j++) {
-			*CONTROL &=~ BIT1; // lat = 0
+			//*CONTROL &=~ BIT1; // lat = 0
 			*CONTROL |= SDA_BIT; // sda = 1
 			*CONTROL &=~ CLK; // clk = 0
 			*CONTROL |= CLK; // clk = 1
-			latch();
+			//latch();
 			*CONTROL &= CLK; // clk = 0;
 		}
 	}
@@ -79,11 +79,11 @@ void run(uint8_t x){
 	//Write code that writes data to led matrix driver (8-bit data). Use values from dots array
 	//Hint: use nested loops (loops inside loops)
 	//Hint2: loop iterations are 8,3,8 (pixels,color,8-bitdata)
-	//latch();
-	for (int pixel=0; pixel < 7; pixel++) {
-		for (int color=0; color < 2; color++) {
-			for (int bit=0; bit < 7; bit++) {
-				*CONTROL &=~ BIT1; // lat = 0
+	*CONTROL &=~ BIT1; // lat = 0
+
+	for (int pixel=0; pixel < 8; pixel++) {
+		for (int color=0; color < 3; color++) {
+			for (int bit=0; bit < 8; bit++) {
 				if (dots[pixel][x][color] & 0x80) {
 					*CONTROL |= SDA_BIT; // sda = 1
 				}
@@ -98,7 +98,6 @@ void run(uint8_t x){
 			}
 		}
 	}
-	//open_line(-1);
 	open_line(x);
 
 
@@ -106,8 +105,8 @@ void run(uint8_t x){
 
 //Latch signal. See colorsshield.pdf or DM163.pdf in project folder on how latching works
 void latch(){
-	*CONTROL |= BIT1;
-	*CONTROL &=~ BIT1;
+	*CONTROL |= BIT1; // lat = 1
+	*CONTROL &=~ BIT1; // lat = 0
 
 }
 
