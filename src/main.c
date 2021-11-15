@@ -60,6 +60,7 @@
 #include "xparameters.h"
 #include "Pixel.h"
 #include "Interrupt_setup.h"
+//#include "alien.h"
 
 //********************************************************************
 //***************TRY TO READ COMMENTS*********************************
@@ -120,8 +121,7 @@ int main()
 
 	    //Try to avoid writing any code in the main loop.
 		while(1){
-			SetPixel(0,0,255,255,255);
-			run(0);
+
 
 		}
 
@@ -142,9 +142,11 @@ void TickHandler(void *CallBackRef){
 
 
 	//****Write code here ****
-
-
-
+	SetPixel(7,7,0,255,0);
+	run(7);
+	open_line(7);
+	//usleep(10000);
+	//drawAlien();
 
 
 

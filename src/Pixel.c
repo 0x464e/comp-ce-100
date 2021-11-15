@@ -47,12 +47,9 @@ void setup(){
 	//24*6 bits needs to be transmitted
 	for (int i=0; i < 24; i++) {
 		for (int j=0; j < 6; j++) {
-			//*CONTROL &=~ BIT1; // lat = 0
 			*CONTROL |= SDA_BIT; // sda = 1
 			*CONTROL &=~ CLK; // clk = 0
 			*CONTROL |= CLK; // clk = 1
-			//latch();
-			*CONTROL &= CLK; // clk = 0;
 		}
 	}
 
@@ -79,7 +76,7 @@ void run(uint8_t x){
 	//Write code that writes data to led matrix driver (8-bit data). Use values from dots array
 	//Hint: use nested loops (loops inside loops)
 	//Hint2: loop iterations are 8,3,8 (pixels,color,8-bitdata)
-	*CONTROL &=~ BIT1; // lat = 0
+	latch();
 
 	for (int pixel=0; pixel < 8; pixel++) {
 		for (int color=0; color < 3; color++) {
@@ -91,14 +88,14 @@ void run(uint8_t x){
 					*CONTROL &=~ SDA_BIT; // sda = 0
 				}
 				*CONTROL &=~ CLK; // clk = 0
-				*CONTROL |= CLK; // clk = 1
-				latch();
-				*CONTROL &=~ CLK; // clk = 0;
 				dots[pixel][x][color] <<= 1;
+				*CONTROL |= CLK; // clk = 1
+
 			}
 		}
 	}
-	open_line(x);
+	//open_line(x);
+	latch();
 
 
 }
