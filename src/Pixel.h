@@ -16,7 +16,8 @@
 #include "xscugic.h"
 #include "xparameters.h"
 
-
+#define CONTROL  *(uint8_t*)(0x41220008)
+#define CHANNEL  *(uint8_t*)(0x41220000)
 
 
 void setup();

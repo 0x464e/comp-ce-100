@@ -72,6 +72,13 @@
 
 //Comment this if you want to disable all interrupts
 #define enable_interrupts
+ //Status==0x01 ->btn0, Status==0x02->btn1, Status==0x04->btn2, Status==0x08-> btn3, Status==0x10->SW0, Status==0x20 -> SW1
+#define BTN0 0x01
+#define BTN1 0x02
+#define BTN2 0x04
+#define BTN3 0x08
+#define SW0  0x10
+#define SW1  0x20
 
 
 
@@ -96,6 +103,8 @@ Brief description:
 *****************************************************************************************/
 
 
+void DrawShip(uint8_t position, uint8_t r, uint8_t g, uint8_t b);
+volatile int8_t ShipPosition = 1;
 
 
 int main()
@@ -142,13 +151,16 @@ void TickHandler(void *CallBackRef){
 
 
 	//****Write code here ****
-	SetPixel(7,7,0,255,0);
-	run(7);
-	open_line(7);
-	//usleep(10000);
-	//drawAlien();
+
+	static uint8_t channel = 0;
+	run(channel);
+	open_line(channel);
+	channel = (channel + 1) % 8;
 
 
+
+
+	DrawShip(ShipPosition, 0, 50, 0);
 
 
 	//****END OF OWN CODE*****************
@@ -191,12 +203,10 @@ void ButtonHandler(void *CallBackRef, u32 Bank, u32 Status){
 	//Hint: Status==0x01 ->btn0, Status==0x02->btn1, Status==0x04->btn2, Status==0x08-> btn3, Status==0x10->SW0, Status==0x20 -> SW1
 
 	//If true, btn0 was used to trigger interrupt
-	if(Status==0x01){
-
-	}
-
-
-
+	if(Status == BTN2)
+		ShipPosition = (ShipPosition + 1) % 8;
+	else if (Status == BTN3)
+		ShipPosition = ((ShipPosition - 1) % 8 + 8) % 8; // trick for negative modulo to work (-1 % 8 = 7)
 
 
 
@@ -204,5 +214,26 @@ void ButtonHandler(void *CallBackRef, u32 Bank, u32 Status){
 
 	//****END OF OWN CODE*****************
 }
+
+void DrawShip(uint8_t position, uint8_t r, uint8_t g, uint8_t b)
+{
+	if(position > 0)
+		SetPixel(position-1, 7, r, g, b);
+	SetPixel(position, 7, r, g, b);
+	SetPixel(position, 6, r, g, b);
+	if(position < 7)
+		SetPixel(position+1, 7, r, g, b);
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
