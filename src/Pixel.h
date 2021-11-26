@@ -26,5 +26,6 @@ void run(uint8_t x);
 void latch();
 void set_channel_bit(uint8_t x);
 void open_line(uint8_t x);
+void DrawShip(uint8_t position, uint8_t r, uint8_t g, uint8_t b);
 
 #endif /* PIXEL_H_ */

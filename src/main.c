@@ -95,135 +95,128 @@ Student number:
 
 Tick boxes that you have coded
 
-Led-matrix driver		Game		    Assembler
-	[]					[]					[]
+Led-matrix driver        Game            Assembler
+    []                    []                    []
 
 Brief description:
 
 *****************************************************************************************/
 
-
-void DrawShip(uint8_t position, uint8_t r, uint8_t g, uint8_t b);
 volatile int8_t ShipPosition = 1;
 
+//starts with value 1000 0000
+//
+
+uint8_t LedPosition = 0;
+
+
+#define LEDS  *(uint8_t*)(0x41200000)
 
 int main()
 {
-	//**DO NOT REMOVE THIS****
-	    init_platform();
-	//************************
+    //**DO NOT REMOVE THIS****
+        init_platform();
+    //************************
 
 
-#ifdef	enable_interrupts
-	    init_interrupts();
+#ifdef    enable_interrupts
+        init_interrupts();
 #endif
 
 
-	    //setup screen
-	    setup();
+        //setup screen
+        setup();
 
 
 
-	    Xil_ExceptionEnable();
+        Xil_ExceptionEnable();
+
+        LEDS = 0b1000;
 
 
-
-	    //Try to avoid writing any code in the main loop.
-		while(1){
-
-
-		}
+        //Try to avoid writing any code in the main loop.
+        while(1){
 
 
-		cleanup_platform();
-		return 0;
+        }
+
+
+        cleanup_platform();
+        return 0;
 }
 
 
 //Timer interrupt handler for led matrix update. Frequency is 800 Hz
 void TickHandler(void *CallBackRef){
-	//Don't remove this
-	uint32_t StatusEvent;
+    //Don't remove this
+    uint32_t StatusEvent;
 
-	//exceptions must be disabled when updating screen
-	Xil_ExceptionDisable();
-
-
-
-	//****Write code here ****
-
-	static uint8_t channel = 0;
-	run(channel);
-	open_line(channel);
-	channel = (channel + 1) % 8;
+    //exceptions must be disabled when updating screen
+    Xil_ExceptionDisable();
 
 
 
+    //****Write code here ****
 
-	DrawShip(ShipPosition, 0, 50, 0);
+    static uint8_t channel = 0;
+    run(channel);
+    open_line(channel);
+    channel = (channel + 1) % 8;
 
 
-	//****END OF OWN CODE*****************
 
-	//*********clear timer interrupt status. DO NOT REMOVE********
-	StatusEvent = XTtcPs_GetInterruptStatus((XTtcPs *)CallBackRef);
-	XTtcPs_ClearInterruptStatus((XTtcPs *)CallBackRef, StatusEvent);
-	//*************************************************************
-	//enable exceptions
-	Xil_ExceptionEnable();
+
+    DrawShip(ShipPosition, 0, 50, 0);
+
+
+    //****END OF OWN CODE*****************
+
+    //*********clear timer interrupt status. DO NOT REMOVE********
+    StatusEvent = XTtcPs_GetInterruptStatus((XTtcPs *)CallBackRef);
+    XTtcPs_ClearInterruptStatus((XTtcPs *)CallBackRef, StatusEvent);
+    //*************************************************************
+    //enable exceptions
+    Xil_ExceptionEnable();
 }
 
 
 //Timer interrupt for moving alien, shooting... Frequency is 10 Hz by default
 void TickHandler1(void *CallBackRef){
 
-	//Don't remove this
-	uint32_t StatusEvent;
+    //Don't remove this
+    uint32_t StatusEvent;
 
-	//****Write code here ****
+    //****Write code here ****
+    blinker();
 
-
-
-
-
-	//****END OF OWN CODE*****************
-	//clear timer interrupt status. DO NOT REMOVE
-	StatusEvent = XTtcPs_GetInterruptStatus((XTtcPs *)CallBackRef);
-	XTtcPs_ClearInterruptStatus((XTtcPs *)CallBackRef, StatusEvent);
+    //****END OF OWN CODE*****************
+    //clear timer interrupt status. DO NOT REMOVE
+    StatusEvent = XTtcPs_GetInterruptStatus((XTtcPs *)CallBackRef);
+    XTtcPs_ClearInterruptStatus((XTtcPs *)CallBackRef, StatusEvent);
 
 }
-
 
 //Interrupt handler for switches and buttons.
 //Reading Status will tell which button or switch was used
 //Bank information is useless in this exercise
 void ButtonHandler(void *CallBackRef, u32 Bank, u32 Status){
-	//****Write code here ****
+    //****Write code here ****
 
-	//Hint: Status==0x01 ->btn0, Status==0x02->btn1, Status==0x04->btn2, Status==0x08-> btn3, Status==0x10->SW0, Status==0x20 -> SW1
+    //Hint: Status==0x01 ->btn0, Status==0x02->btn1, Status==0x04->btn2, Status==0x08-> btn3, Status==0x10->SW0, Status==0x20 -> SW1
 
-	//If true, btn0 was used to trigger interrupt
-	if(Status == BTN2)
-		ShipPosition = (ShipPosition + 1) % 8;
-	else if (Status == BTN3)
-		ShipPosition = ((ShipPosition - 1) % 8 + 8) % 8; // trick for negative modulo to work (-1 % 8 = 7)
-
+    if(Status == BTN2)
+        ShipPosition = (ShipPosition + 1) % 8;
+    else if (Status == BTN3)
+        ShipPosition = ((ShipPosition - 1) % 8 + 8) % 8; // trick for negative modulo to work (-1 % 8 = 7)
 
 
 
 
-	//****END OF OWN CODE*****************
+
+    //****END OF OWN CODE*****************
 }
 
-void DrawShip(uint8_t position, uint8_t r, uint8_t g, uint8_t b)
-{
-	if(position > 0)
-		SetPixel(position-1, 7, r, g, b);
-	SetPixel(position, 7, r, g, b);
-	SetPixel(position, 6, r, g, b);
-	if(position < 7)
-		SetPixel(position+1, 7, r, g, b);
-}
+
 
 
 
