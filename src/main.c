@@ -60,7 +60,8 @@
 #include "xparameters.h"
 #include "Pixel.h"
 #include "Interrupt_setup.h"
-//#include "alien.h"
+#include "alien.h"
+#include "Bullet.h"
 
 //********************************************************************
 //***************TRY TO READ COMMENTS*********************************
@@ -103,6 +104,9 @@ Brief description:
 *****************************************************************************************/
 
 volatile int8_t ShipPosition = 1;
+
+Bullet alienbullet = {-1, 1, {1,1}, 0};
+static Bullet* alienbullet_ptr = NULL;
 
 //starts with value 1000 0000
 //
@@ -159,14 +163,16 @@ void TickHandler(void *CallBackRef){
     //****Write code here ****
 
     static uint8_t channel = 0;
-    run(channel);
-    open_line(channel);
-    channel = (channel + 1) % 8;
-
+    run(ShipPosition-1+channel);
+    open_line(ShipPosition-1+channel);
+    channel = (channel + 1) % 3;
 
 
 
     DrawShip(ShipPosition, 0, 50, 0);
+
+
+
 
 
     //****END OF OWN CODE*****************
@@ -188,6 +194,14 @@ void TickHandler1(void *CallBackRef){
 
     //****Write code here ****
     blinker();
+    DrawAlien(alienbullet_ptr);
+
+    *alienbullet_ptr = alienbullet;
+    DrawBullet(alienbullet_ptr);
+    //if (alienbullet_ptr) {
+    //	DrawBullet(alienbullet_ptr);
+    //}
+
 
     //****END OF OWN CODE*****************
     //clear timer interrupt status. DO NOT REMOVE
