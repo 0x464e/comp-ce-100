@@ -78,15 +78,16 @@ void run(uint8_t x){
     {
         for (int color=0; color < 3; color++)
         {
+        	uint8_t data = dots[x][pixel][color];
             for (int bit=0; bit < 8; bit++)
             {
-                if (dots[x][pixel][color] & 0x80)
+                if (data & 0x80)
                     CONTROL |= SDA_BIT; // sda = 1
                 else
                     CONTROL &= ~SDA_BIT; // sda = 0
 
                 CONTROL &=~ CLK; // clk = 0
-                dots[x][pixel][color] <<= 1;
+                data <<= 1;
                 CONTROL |= CLK; // clk = 1
             }
         }
@@ -112,14 +113,4 @@ void open_line(uint8_t x){
     else {
         CHANNEL = 0;
     }
-}
-
-void DrawShip(uint8_t position, uint8_t r, uint8_t g, uint8_t b)
-{
-    if(position > 0)
-        SetPixel(position-1, 7, r, g, b);
-    SetPixel(position, 7, r, g, b);
-    SetPixel(position, 6, r, g, b);
-    if(position < 7)
-        SetPixel(position+1, 7, r, g, b);
 }

@@ -62,6 +62,7 @@
 #include "Interrupt_setup.h"
 #include "alien.h"
 #include "Bullet.h"
+#include "Ship.h"
 
 //********************************************************************
 //***************TRY TO READ COMMENTS*********************************
@@ -109,7 +110,9 @@ struct Alien alien = { 100, {0,1}, 1, 0};
 Alien* alien_ptr = &alien;
 Bullet alienbullet_global = {1, 1, {0,0}, 0, 0};
 Bullet* alienbullet_ptr = &alienbullet_global;
-
+const Bullet ship_bullet = {-1, 0, {-1,-1}, 0, 0};
+Bullet ship_bullets[3] = {ship_bullet, ship_bullet, ship_bullet};
+Bullet* ship_bullets_ptr = ship_bullets;
 //starts with value 1000 0000
 //
 
@@ -200,13 +203,14 @@ void TickHandler1(void *CallBackRef){
     blinker();
     DrawAlien(alien_ptr);
 
-    usleep(100);
     open_line(8);
     //DrawBullet(alienbullet_ptr);
 
-
     DrawBullet(alienbullet_ptr, alien_ptr);
-    usleep(100);
+    for (int i=0; i < 3; i++) {
+    	open_line(8);
+    	DrawBullet(ship_bullets_ptr + i, NULL);
+    }
 
     //****END OF OWN CODE*****************
     //clear timer interrupt status. DO NOT REMOVE
@@ -222,12 +226,20 @@ void ButtonHandler(void *CallBackRef, u32 Bank, u32 Status){
     //****Write code here ****
 
     //Hint: Status==0x01 ->btn0, Status==0x02->btn1, Status==0x04->btn2, Status==0x08-> btn3, Status==0x10->SW0, Status==0x20 -> SW1
+    static uint8_t bullet_no = 0;
 
-    if(Status == BTN2)
+
+    if(Status == BTN2) {
         ShipPosition = (ShipPosition + 1) % 8;
-    else if (Status == BTN3)
+    }
+    else if (Status == BTN3) {
         ShipPosition = ((ShipPosition - 1) % 8 + 8) % 8; // trick for negative modulo to work (-1 % 8 = 7)
-
+    }
+    else if (Status == BTN1) {
+    	ship_bullets[bullet_no].coords.x = ShipPosition;
+    	ship_bullets[bullet_no].coords.y = 6;
+        bullet_no = (bullet_no + 1) % 3;
+    }
 
 
 

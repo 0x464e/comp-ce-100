@@ -11,18 +11,18 @@
 
 
 void DrawAlien(Alien* alien) {
-	SetPixel(alien->coords.x,alien->coords.y,255,0,255);
-	run(alien->coords.x);
-	open_line(alien->coords.x);
 	alien->ticker++;
 	if (alien->ticker > 10) {
+		SetPixel(alien->coords.x,alien->coords.y,0,0,0);
 		alien->coords.x += alien->direction;
+		SetPixel(alien->coords.x,alien->coords.y,50,0,50);
 		if (alien->coords.x == 7) {
 			alien->direction = -1;
 		}
 		else if (alien->coords.x == 0) {
 			alien->direction = 1;
 		}
+
 		alien->ticker = 0;
 	}
 }
