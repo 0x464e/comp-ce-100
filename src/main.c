@@ -105,8 +105,10 @@ Brief description:
 
 volatile int8_t ShipPosition = 1;
 
-Bullet alienbullet = {-1, 1, {1,1}, 0};
-static Bullet* alienbullet_ptr = NULL;
+struct Alien alien = { 100, {0,1}, 1, 0};
+Alien* alien_ptr = &alien;
+Bullet alienbullet_global = {1, 1, {0,0}, 0, 0};
+Bullet* alienbullet_ptr = &alienbullet_global;
 
 //starts with value 1000 0000
 //
@@ -163,9 +165,10 @@ void TickHandler(void *CallBackRef){
     //****Write code here ****
 
     static uint8_t channel = 0;
-    run(ShipPosition-1+channel);
-    open_line(ShipPosition-1+channel);
-    channel = (channel + 1) % 3;
+    open_line(8);
+    run(channel);
+    open_line(channel);
+    channel = (channel + 1) % 8;
 
 
 
@@ -193,15 +196,17 @@ void TickHandler1(void *CallBackRef){
     uint32_t StatusEvent;
 
     //****Write code here ****
+    open_line(8);
     blinker();
-    DrawAlien(alienbullet_ptr);
+    DrawAlien(alien_ptr);
 
-    *alienbullet_ptr = alienbullet;
-    DrawBullet(alienbullet_ptr);
-    //if (alienbullet_ptr) {
-    //	DrawBullet(alienbullet_ptr);
-    //}
+    usleep(100);
+    open_line(8);
+    //DrawBullet(alienbullet_ptr);
 
+
+    DrawBullet(alienbullet_ptr, alien_ptr);
+    usleep(100);
 
     //****END OF OWN CODE*****************
     //clear timer interrupt status. DO NOT REMOVE
