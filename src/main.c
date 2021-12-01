@@ -110,12 +110,10 @@ Ship* ship_ptr = &ship;
 
 struct Alien alien = { 100, {0,1}, 1, 0};
 Alien* alien_ptr = &alien;
-Bullet alienbullet_global = {1, 1, {0,0}, 0, 0};
-Bullet* alienbullet_ptr = &alienbullet_global;
 
-const Bullet ship_bullet = {-1, 0, {-1,-1}, 0, 0};
-Bullet ship_bullets[3] = {ship_bullet, ship_bullet, ship_bullet};
-Bullet* ship_bullets_ptr = ship_bullets;
+const Bullet ship_bullet_base = {-1, {-1,-1}, 0};
+Bullet ship_bullet = ship_bullet_base;
+Bullet* ship_bullets_ptr = &ship_bullet;
 
 uint8_t LedPosition = 0;
 
@@ -201,17 +199,13 @@ void TickHandler1(void *CallBackRef){
 
     //****Write code here ****
     open_line(8);
+    //uint8_t LedPosition = 0;
     blinker();
     DrawAlien(alien_ptr);
 
     open_line(8);
-    //DrawBullet(alienbullet_ptr);
 
-    DrawBullet(alienbullet_ptr, alien_ptr);
-    for (int i=0; i < 3; i++) {
-    	open_line(8);
-    	DrawBullet(ship_bullets_ptr + i, NULL);
-    }
+    DrawBullet(ship_bullets_ptr);
 
     //****END OF OWN CODE*****************
     //clear timer interrupt status. DO NOT REMOVE
@@ -227,7 +221,6 @@ void ButtonHandler(void *CallBackRef, u32 Bank, u32 Status){
     //****Write code here ****
 
     //Hint: Status==0x01 ->btn0, Status==0x02->btn1, Status==0x04->btn2, Status==0x08-> btn3, Status==0x10->SW0, Status==0x20 -> SW1
-    static uint8_t bullet_no = 0;
 
 
     if(Status == BTN2) {
@@ -237,9 +230,9 @@ void ButtonHandler(void *CallBackRef, u32 Bank, u32 Status){
         MoveShip(LEFT, ship_ptr);
     }
     else if (Status == BTN1) {
-    	ship_bullets[bullet_no].coords.x = ship_ptr->position;
-    	ship_bullets[bullet_no].coords.y = 6;
-        bullet_no = (bullet_no + 1) % 3;
+    	SetPixel(ship_bullet.coords.x, ship_bullet.coords.y, 0,0,0);
+    	ship_bullet.coords.x = ship_ptr->position;
+    	ship_bullet.coords.y = 6;
     }
 
 

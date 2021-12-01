@@ -13,12 +13,10 @@
 
 typedef struct Bullet {
 	int direction;
-	int is_alien;
 	struct Coords coords;
 	int ticker;
-	int new_bullet_ticker;
 } Bullet;
 
-void DrawBullet(Bullet* bullet, Alien* alien);
+void DrawBullet(Bullet* bullet);
 
 #endif /* SRC_BULLET_H_ */
