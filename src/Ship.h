@@ -16,7 +16,15 @@
 #include "xscugic.h"
 #include "xparameters.h"
 #include "Pixel.h"
+#include "utils.h"
+
+typedef struct Ship {
+	int position;
+} Ship;
 
 void DrawShip(uint8_t position, uint8_t r, uint8_t g, uint8_t b);
+void MoveShip(uint8_t direction, Ship* ship);
+
+
 
 #endif /* SRC_SHIP_H_ */

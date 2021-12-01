@@ -13,4 +13,10 @@ struct Coords {
 	int y;
 } Coords;
 
+enum Direction
+{
+	LEFT,
+	RIGHT
+};
+
 #endif /* SRC_UTILS_H_ */

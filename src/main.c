@@ -82,7 +82,7 @@
 #define SW0  0x10
 #define SW1  0x20
 
-
+#define LEDS  *(uint8_t*)(0x41200000)
 
 
 /***************************************************************************************
@@ -103,23 +103,23 @@ Led-matrix driver        Game            Assembler
 Brief description:
 
 *****************************************************************************************/
+//uint8_t ShipPosition = 1;
 
-volatile int8_t ShipPosition = 1;
+struct Ship ship = { 1 };
+Ship* ship_ptr = &ship;
 
 struct Alien alien = { 100, {0,1}, 1, 0};
 Alien* alien_ptr = &alien;
 Bullet alienbullet_global = {1, 1, {0,0}, 0, 0};
 Bullet* alienbullet_ptr = &alienbullet_global;
+
 const Bullet ship_bullet = {-1, 0, {-1,-1}, 0, 0};
 Bullet ship_bullets[3] = {ship_bullet, ship_bullet, ship_bullet};
 Bullet* ship_bullets_ptr = ship_bullets;
-//starts with value 1000 0000
-//
 
 uint8_t LedPosition = 0;
 
 
-#define LEDS  *(uint8_t*)(0x41200000)
 
 int main()
 {
@@ -142,6 +142,7 @@ int main()
 
         LEDS = 0b1000;
 
+        DrawShip(ship_ptr->position, 0, 50, 0);
 
         //Try to avoid writing any code in the main loop.
         while(1){
@@ -175,7 +176,7 @@ void TickHandler(void *CallBackRef){
 
 
 
-    DrawShip(ShipPosition, 0, 50, 0);
+
 
 
 
@@ -230,13 +231,13 @@ void ButtonHandler(void *CallBackRef, u32 Bank, u32 Status){
 
 
     if(Status == BTN2) {
-        ShipPosition = (ShipPosition + 1) % 8;
+        MoveShip(RIGHT, ship_ptr);
     }
     else if (Status == BTN3) {
-        ShipPosition = ((ShipPosition - 1) % 8 + 8) % 8; // trick for negative modulo to work (-1 % 8 = 7)
+        MoveShip(LEFT, ship_ptr);
     }
     else if (Status == BTN1) {
-    	ship_bullets[bullet_no].coords.x = ShipPosition;
+    	ship_bullets[bullet_no].coords.x = ship_ptr->position;
     	ship_bullets[bullet_no].coords.y = 6;
         bullet_no = (bullet_no + 1) % 3;
     }
