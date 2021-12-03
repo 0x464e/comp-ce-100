@@ -1,10 +1,3 @@
-/*
- * Ship.h
- *
- *  Created on: Nov 29, 2021
- *      Author: tsuribori
- */
-
 #ifndef SRC_SHIP_H_
 #define SRC_SHIP_H_
 #include "platform.h"
@@ -22,8 +15,8 @@ typedef struct Ship {
 	int position;
 } Ship;
 
-void DrawShip(uint8_t position, uint8_t r, uint8_t g, uint8_t b);
-void MoveShip(uint8_t direction, Ship* ship);
+void InitializeShip(uint8_t position, uint8_t r, uint8_t g, uint8_t b);
+void MoveShip(int8_t direction, Ship* ship);
 
 
 

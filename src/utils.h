@@ -1,10 +1,3 @@
-/*
- * utils.h
- *
- *  Created on: 15.11.2021
- *      Author: rinne8
- */
-
 #ifndef SRC_UTILS_H_
 #define SRC_UTILS_H_
 
@@ -15,8 +8,8 @@ struct Coords {
 
 enum Direction
 {
-	LEFT,
-	RIGHT
+	LEFT = -1,
+	RIGHT = 1
 };
 
 #endif /* SRC_UTILS_H_ */

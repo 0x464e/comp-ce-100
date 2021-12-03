@@ -86,33 +86,30 @@
 
 
 /***************************************************************************************
-Name:
-Student number:
+Name: 
+Student number: 
 
-Name:
-Student number:
-
-Name:
-Student number:
+Name: 
+Student number: 
 
 Tick boxes that you have coded
 
 Led-matrix driver        Game            Assembler
-    []                    []                    []
+    [x]                    [x]                    [x]
 
 Brief description:
+Certain design choices have been made with a more featureful game in mind,
+however we ran out of time to implement the rest of the game.
 
 *****************************************************************************************/
-//uint8_t ShipPosition = 1;
 
 struct Ship ship = { 1 };
 Ship* ship_ptr = &ship;
 
-struct Alien alien = { 100, {0,1}, 1, 0};
+struct Alien alien = { 100, {0,0}, 1, 0 };
 Alien* alien_ptr = &alien;
 
-const Bullet ship_bullet_base = {-1, {-1,-1}, 0};
-Bullet ship_bullet = ship_bullet_base;
+struct Bullet ship_bullet = { {-1,-1} };
 Bullet* ship_bullets_ptr = &ship_bullet;
 
 uint8_t LedPosition = 0;
@@ -134,13 +131,11 @@ int main()
         //setup screen
         setup();
 
-
-
         Xil_ExceptionEnable();
 
         LEDS = 0b1000;
 
-        DrawShip(ship_ptr->position, 0, 50, 0);
+        InitializeShip(ship_ptr->position, 0, 50, 0);
 
         //Try to avoid writing any code in the main loop.
         while(1){
@@ -172,14 +167,6 @@ void TickHandler(void *CallBackRef){
     open_line(channel);
     channel = (channel + 1) % 8;
 
-
-
-
-
-
-
-
-
     //****END OF OWN CODE*****************
 
     //*********clear timer interrupt status. DO NOT REMOVE********
@@ -198,14 +185,9 @@ void TickHandler1(void *CallBackRef){
     uint32_t StatusEvent;
 
     //****Write code here ****
-    open_line(8);
-    //uint8_t LedPosition = 0;
     blinker();
-    DrawAlien(alien_ptr);
-
-    open_line(8);
-
     DrawBullet(ship_bullets_ptr);
+    DrawAlien(alien_ptr);
 
     //****END OF OWN CODE*****************
     //clear timer interrupt status. DO NOT REMOVE
@@ -222,21 +204,18 @@ void ButtonHandler(void *CallBackRef, u32 Bank, u32 Status){
 
     //Hint: Status==0x01 ->btn0, Status==0x02->btn1, Status==0x04->btn2, Status==0x08-> btn3, Status==0x10->SW0, Status==0x20 -> SW1
 
-
     if(Status == BTN2) {
         MoveShip(RIGHT, ship_ptr);
     }
     else if (Status == BTN3) {
         MoveShip(LEFT, ship_ptr);
     }
-    else if (Status == BTN1) {
-    	SetPixel(ship_bullet.coords.x, ship_bullet.coords.y, 0,0,0);
+    else if (Status == BTN1 && ship_bullet.coords.y <= 0) {
+    	if(ship_bullet.coords.y != 6)
+    		SetPixel(ship_bullet.coords.x, ship_bullet.coords.y, 0,0,0); //clear previous bullet
     	ship_bullet.coords.x = ship_ptr->position;
     	ship_bullet.coords.y = 6;
     }
-
-
-
 
     //****END OF OWN CODE*****************
 }

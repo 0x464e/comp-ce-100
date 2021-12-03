@@ -1,10 +1,3 @@
-/*
- * Pixel.h
- *
- *  Created on: ------
- *      Author: ------
- */
-
 #ifndef PIXEL_H_
 #define PIXEL_H_
 

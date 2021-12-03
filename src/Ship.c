@@ -1,13 +1,6 @@
-/*
- * Ship.c
- *
- *  Created on: Nov 29, 2021
- *      Author: tsuribori
- */
-
 #include "Ship.h"
 
-void DrawShip(uint8_t position, uint8_t r, uint8_t g, uint8_t b)
+void InitializeShip(uint8_t position, uint8_t r, uint8_t g, uint8_t b)
 {
 	if(position > 0)
 		SetPixel(position-1, 7, r, g, b);
@@ -18,7 +11,7 @@ void DrawShip(uint8_t position, uint8_t r, uint8_t g, uint8_t b)
 
 }
 
-void MoveShip(uint8_t direction, Ship* ship)
+void MoveShip(int8_t direction, Ship* ship)
 {
 	if (direction == LEFT)
 	{

@@ -1,10 +1,3 @@
-/*
- * alien.h
- *
- *  Created on: 15.11.2021
- *      Author: rinne8
- */
-
 #ifndef SRC_ALIEN_H_
 #define SRC_ALIEN_H_
 #include "utils.h"

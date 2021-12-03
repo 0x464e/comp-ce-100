@@ -1,10 +1,3 @@
-/*
- * Pixel.c
- *
- *  Created on: -----
- *      Author: -----
- */
-
 #include "Pixel.h"
 
 
